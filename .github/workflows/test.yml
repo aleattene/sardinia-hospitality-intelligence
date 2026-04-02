@@ -21,8 +21,8 @@ jobs:
           python-version: "3.13"
           cache: "pip"
 
-      - name: Install dependencies
-        run: pip install -r requirements-dev.txt
+      - name: Install runtime and test dependencies
+        run: pip install -r requirements.txt pytest pytest-cov
 
       - name: Run tests
         run: pytest

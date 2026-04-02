@@ -43,9 +43,17 @@ def execute_sql_directory(conn: duckdb.DuckDBPyConnection, sql_dir: str | Path) 
     Args:
         conn: Active DuckDB connection.
         sql_dir: Path to directory containing .sql files.
+
+    Raises:
+        FileNotFoundError: If the directory does not exist.
+        ValueError: If no .sql files are found in the directory.
     """
     directory: Path = Path(sql_dir)
+    if not directory.is_dir():
+        raise FileNotFoundError(f"SQL directory not found: {directory}")
     sql_files: list[Path] = sorted(directory.glob("*.sql"))
+    if not sql_files:
+        raise ValueError(f"No .sql files found in: {directory}")
     for sql_file in sql_files:
         execute_sql_file(conn, sql_file)
     logger.info("Executed %d SQL files from %s", len(sql_files), directory.name)

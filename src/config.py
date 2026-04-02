@@ -27,6 +27,20 @@ def _require_env(name: str) -> str:
     return value
 
 
+def _resolve_path(raw: str, base: Path) -> Path:
+    """Resolve a path against base if relative, leave absolute paths unchanged.
+
+    Args:
+        raw: Raw path string from environment variable.
+        base: Base directory to resolve relative paths against.
+
+    Returns:
+        Resolved absolute Path.
+    """
+    path: Path = Path(raw)
+    return path if path.is_absolute() else base / path
+
+
 # --- Project root ---
 PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
 
@@ -34,12 +48,14 @@ PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
 FETCH_ISTAT_DATA: bool = _require_env("FETCH_ISTAT_DATA").lower() == "true"
 
 # --- Data directories ---
-DATA_DIR: Path = Path(_require_env("DATA_DIR"))
-DB_DIR: Path = Path(_require_env("DB_DIR"))
+DATA_DIR: Path = _resolve_path(_require_env("DATA_DIR"), PROJECT_ROOT)
+DB_DIR: Path = _resolve_path(_require_env("DB_DIR"), PROJECT_ROOT)
 DB_FILENAME: str = _require_env("DB_FILENAME")
 DB_PATH: Path = DB_DIR / DB_FILENAME
-RAW_DATA_DIR: Path = Path(_require_env("RAW_DATA_DIR"))
-ANALYSIS_OUTPUT_DIR: Path = Path(_require_env("ANALYSIS_OUTPUT_DIR"))
+RAW_DATA_DIR: Path = _resolve_path(_require_env("RAW_DATA_DIR"), PROJECT_ROOT)
+ANALYSIS_OUTPUT_DIR: Path = _resolve_path(
+    _require_env("ANALYSIS_OUTPUT_DIR"), PROJECT_ROOT
+)
 
 # --- SQL (derived from project structure, not env vars) ---
 SQL_DIR: Path = PROJECT_ROOT / "sql"

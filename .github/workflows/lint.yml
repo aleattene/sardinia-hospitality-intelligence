@@ -21,8 +21,8 @@ jobs:
           python-version: "3.13"
           cache: "pip"
 
-      - name: Install dependencies
-        run: pip install -r requirements-dev.txt
+      - name: Install black
+        run: pip install black
 
       - name: Check formatting (black)
         run: black --check .
