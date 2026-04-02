@@ -5,7 +5,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+# Compute PROJECT_ROOT before load_dotenv so the .env path is deterministic
+# regardless of the working directory from which the code is invoked.
+PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
+load_dotenv(PROJECT_ROOT / ".env")
 
 
 def _require_env(name: str) -> str:
@@ -40,9 +43,6 @@ def _resolve_path(raw: str, base: Path) -> Path:
     path: Path = Path(raw)
     return path if path.is_absolute() else base / path
 
-
-# --- Project root ---
-PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
 
 # --- Pipeline control ---
 FETCH_ISTAT_DATA: bool = _require_env("FETCH_ISTAT_DATA").lower() == "true"

@@ -32,6 +32,8 @@ black==26.3.1
     # via -r requirements-dev.in
 bleach[css]==6.3.0
     # via nbconvert
+build==1.4.2
+    # via pip-tools
 certifi==2026.2.25
     # via
     #   httpcore
@@ -46,7 +48,9 @@ cfgv==3.5.0
 charset-normalizer==3.4.6
     # via requests
 click==8.3.1
-    # via black
+    # via
+    #   black
+    #   pip-tools
 comm==0.2.3
     # via
     #   ipykernel
@@ -233,6 +237,7 @@ numpy==2.4.4
 packaging==26.0
     # via
     #   black
+    #   build
     #   geopandas
     #   ipykernel
     #   jupyter-events
@@ -243,6 +248,7 @@ packaging==26.0
     #   nbconvert
     #   pyogrio
     #   pytest
+    #   wheel
 pandas==3.0.2
     # via
     #   -r requirements.in
@@ -258,6 +264,8 @@ pexpect==4.9.0
     # via ipython
 pillow==12.2.0
     # via matplotlib
+pip-tools==7.5.3
+    # via -r requirements-dev.in
 platformdirs==4.9.4
     # via
     #   black
@@ -299,6 +307,10 @@ pyparsing==3.3.2
     # via matplotlib
 pyproj==3.7.2
     # via geopandas
+pyproject-hooks==1.2.0
+    # via
+    #   build
+    #   pip-tools
 pytest==9.0.2
     # via
     #   -r requirements-dev.in
@@ -413,8 +425,11 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.9.0
     # via jupyter-server
+wheel==0.46.3
+    # via pip-tools
 widgetsnbextension==4.0.15
     # via ipywidgets
 
 # The following packages are considered to be unsafe in a requirements file:
+# pip
 # setuptools
