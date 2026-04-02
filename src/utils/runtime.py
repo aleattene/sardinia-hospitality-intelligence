@@ -1,6 +1,7 @@
 """Runtime utilities: timers and timestamps."""
 
 import time
+import types
 from datetime import datetime, timezone
 
 
@@ -25,6 +26,7 @@ class Timer:
         self,
         exc_type: type[BaseException] | None,
         exc_val: BaseException | None,
-        exc_tb: object,
-    ) -> None:
+        exc_tb: types.TracebackType | None,
+    ) -> bool | None:
         self.elapsed = time.perf_counter() - self._start
+        return None

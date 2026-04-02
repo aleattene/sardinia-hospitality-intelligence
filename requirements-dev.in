@@ -1,4 +1,4 @@
--r requirements.txt
+-r requirements.in
 jupyter>=1.0.0
 nbstripout>=0.7.0
 pytest>=8.0.0
