@@ -24,9 +24,7 @@ def get_connection(db_path: str | Path) -> duckdb.DuckDBPyConnection:
     return conn
 
 
-def execute_sql_file(
-    conn: duckdb.DuckDBPyConnection, sql_path: str | Path
-) -> None:
+def execute_sql_file(conn: duckdb.DuckDBPyConnection, sql_path: str | Path) -> None:
     """Read and execute a SQL file.
 
     Args:
@@ -39,9 +37,7 @@ def execute_sql_file(
     logger.info("Executed SQL: %s", path.name)
 
 
-def execute_sql_directory(
-    conn: duckdb.DuckDBPyConnection, sql_dir: str | Path
-) -> None:
+def execute_sql_directory(conn: duckdb.DuckDBPyConnection, sql_dir: str | Path) -> None:
     """Execute all .sql files in a directory, sorted alphabetically.
 
     Args:
