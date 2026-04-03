@@ -44,7 +44,7 @@ This analysis addresses five key questions for hospitality operators and investo
 | KPI | Formula | Interpretation |
 |-----|---------|----------------|
 | Occupancy Proxy | `arrivals / beds` | Demand pressure relative to supply |
-| Supply-Demand Gap | `beds - arrivals_proxy` | Absolute under/over-supply estimate |
+| Supply-Demand Gap | `beds - arrivals` | Absolute under/over-supply estimate |
 | Priority Score | `0.6 × gap_score + 0.4 × growth_score` | Composite expansion priority (0–1) |
 
 ---
@@ -96,7 +96,7 @@ project_root/
 │   ├── schema.sql                     # DDL: raw tables
 │   ├── views/                         # Analytical views (demand, supply, gap, seasonality…)
 │   └── queries/                       # Materialized queries (priority score, rankings…)
-├── data/                              # gitignored
+├── data/                              # Git-ignored data directory
 │   ├── raw/                           # Original ISTAT CSV files
 │   ├── db/                            # DuckDB file
 │   └── analysis/                      # CSV output for notebook
