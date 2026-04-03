@@ -1,0 +1,41 @@
+name: Test & Coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    env:
+      FETCH_ISTAT_DATA: "false"
+      DATA_DIR: "data"
+      DB_DIR: "data/db"
+      DB_FILENAME: "hospitality.duckdb"
+      RAW_DATA_DIR: "data/raw"
+      ANALYSIS_OUTPUT_DIR: "data/analysis"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install test dependencies
+        run: pip install -r requirements-test.txt
+
+      - name: Run tests
+        run: pytest
+
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v4
+      #   with:
+      #     file: coverage.xml
+      #     fail_ci_if_error: false
