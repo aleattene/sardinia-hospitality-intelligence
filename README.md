@@ -31,7 +31,42 @@ This analysis addresses five key questions for hospitality operators and investo
 
 ## Key Findings
 
-> Analysis in progress. Findings will be published here upon completion of the EDA notebook.
+> Based on ISTAT data 2018–2024 across five Sardinian provinces.
+
+### Demand recovery
+Sardinia absorbed a ~60% collapse in arrivals during 2020, rebounded strongly through 2021–2022, and by 2024 reached **~4.44M arrivals** — roughly **25% above 2019 pre-pandemic levels** (+2.15M in Sassari alone).
+
+### Supply-demand gap
+All provinces remain below full occupancy, but pressure is uneven.
+Nuoro shows the tightest supply constraint (**55.4% occupancy proxy**), followed by Cagliari (51.3%) and Sud Sardegna (49.4%).
+Oristano sits furthest from saturation (43.0%) — indicating available capacity but weak demand pull.
+
+### Seasonality
+Tourism is strongly concentrated in summer.
+The top 3 months account for **52–66% of annual overnight stays** depending on province.
+**Cagliari is the least seasonal** (peak-month share: 20%, index: 0.13) — highest potential for year-round strategies.
+Sud Sardegna and Nuoro are the most concentrated (index ≈ 0.19).
+
+### Tourist origin
+International tourists represent a significant share everywhere, ranging from **41% (Sud Sardegna)** to **59.5% (Sassari)**.
+Sassari and Nuoro attract the most internationally diverse demand — an asset for premium positioning.
+
+### Fastest-growing segments
+**Short-term rentals are the dominant growth engine** across all provinces (YoY 2023→2024: +38.7% Sassari, +32.5% Nuoro, +31.1% Sud Sardegna).
+Hotels grew more modestly (+3–13%), with Oristano hotels contracting (–6.3%).
+
+### Expansion targeting
+The composite priority score (occupancy + YoY growth + international share) ranks provinces as:
+
+| Rank | Province | Priority Score |
+|------|----------|---------------|
+| 1 | Nuoro | 0.74 |
+| 2 | Sassari | 0.72 |
+| 3 | Cagliari | 0.58 |
+| 4 | Sud Sardegna | 0.50 |
+| 5 | Oristano | 0.06 |
+
+**Nuoro** leads on occupancy pressure and international share; **Sassari** on growth momentum and international openness.
 
 ---
 
@@ -43,9 +78,9 @@ This analysis addresses five key questions for hospitality operators and investo
 
 | KPI | Formula | Interpretation |
 |-----|---------|----------------|
-| Occupancy Proxy | `arrivals / beds` | Demand pressure relative to supply |
+| Occupancy Proxy | `nights / beds` | Intensity of bed usage — closer to real occupancy rate |
 | Supply-Demand Gap | `beds - arrivals` | Absolute under/over-supply estimate |
-| Priority Score | `0.6 × gap_score + 0.4 × growth_score` | Composite expansion priority (0–1) |
+| Priority Score | `(occupancy_norm + yoy_norm + intl_share_norm) / 3` | Equal-weight composite expansion priority (0–1) |
 
 ---
 
@@ -53,11 +88,11 @@ This analysis addresses five key questions for hospitality operators and investo
 
 | Output | Description |
 |--------|-------------|
-| Supply-demand gap ranking | By province, with occupancy proxy and absolute gap |
-| Expansion priority ranking | Provinces scored and tiered by gap and growth |
-| Seasonality profile | Monthly demand distribution per province × accommodation type |
+| Supply-demand gap ranking | By province, with occupancy proxy (nights/beds) and absolute gap |
+| Expansion priority ranking | Provinces scored on 3 equal-weight components: occupancy pressure, YoY growth, international share |
+| Seasonality profile | Monthly demand distribution per province, Herfindahl-style concentration index |
 | Tourist origin segmentation | Italian vs international breakdown by province |
-| Year-over-year growth | Top growing segments by accommodation type and origin |
+| Year-over-year growth | Top growing segments by accommodation type and province |
 | Geographic visualization | Choropleth map of coverage across Sardinian provinces |
 | Interactive dashboard | Looker Studio Dashboard *(coming soon)* |
 

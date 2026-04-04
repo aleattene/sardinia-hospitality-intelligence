@@ -9,11 +9,21 @@ SELECT
     province,
     month,
     origin,
-    -- Derive macro group when origin_macro is absent (2023-2024 source format)
-    COALESCE(
-        origin_macro,
-        CASE WHEN LOWER(origin) = 'italia' THEN 'Domestico' ELSE 'Internazionale' END
-    ) AS origin_group,
+    -- Normalize origin group across schema versions:
+    --   2018-2022: origin_macro = 'Italiani' (domestic) or 'Stranieri' (international)
+    --   2023-2024: no origin_macro column; domestic = known Italian regions listed below
+    CASE
+        WHEN origin_macro = 'Italiani'
+          OR origin IN (
+            'Piemonte', 'Valle d''Aosta', 'Lombardia', 'Veneto',
+            'Friuli-Venezia Giulia', 'Liguria', 'Emilia Romagna',
+            'Toscana', 'Umbria', 'Marche', 'Lazio', 'Abruzzo',
+            'Molise', 'Campania', 'Puglia', 'Basilicata', 'Calabria',
+            'Sicilia', 'Sardegna', 'Bolzano', 'Trento', 'Italia'
+        )
+        THEN 'Domestico'
+        ELSE 'Internazionale'
+    END AS origin_group,
     SUM(arrivals) AS total_arrivals,
     SUM(nights)   AS total_nights
 FROM stg_tourism_flows
