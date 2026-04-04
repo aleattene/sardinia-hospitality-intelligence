@@ -37,6 +37,9 @@ _VIEWS: list[str] = [
     "v_trend_yoy",
 ]
 
+# Union of allowed export targets — used to validate identifiers before query execution.
+_ALLOWED_EXPORT_TARGETS: frozenset[str] = frozenset(_QUERY_TABLES + _VIEWS)
+
 
 def _export_table(
     conn: duckdb.DuckDBPyConnection,
@@ -52,7 +55,12 @@ def _export_table(
 
     Returns:
         Number of rows exported.
+
+    Raises:
+        ValueError: If table is not in the allowed export targets.
     """
+    if table not in _ALLOWED_EXPORT_TARGETS:
+        raise ValueError(f"Export target '{table}' is not an allowed table or view.")
     df: pd.DataFrame = conn.execute(f"SELECT * FROM {table}").df()  # noqa: S608
     output_path: Path = output_dir / f"{table}.csv"
     df.to_csv(output_path, index=False)
