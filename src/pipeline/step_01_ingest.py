@@ -84,7 +84,7 @@ def _normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _replace_null_strings(df: pd.DataFrame) -> pd.DataFrame:
-    """Replace the literal string 'NULL' (case-insensitive) with NaN."""
+    """Replace the literal string 'NULL' (case-insensitive) with pd.NA."""
     return df.replace(r"(?i)^null$", pd.NA, regex=True)
 
 
