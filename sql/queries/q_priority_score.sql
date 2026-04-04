@@ -16,6 +16,7 @@ gap AS (
     FROM v_supply_demand_gap
     WHERE year = (SELECT yr FROM latest_year)
       AND province IS NOT NULL
+      AND occupancy_proxy IS NOT NULL  -- exclude provinces with zero/NULL beds
 ),
 trend AS (
     SELECT province, yoy_arrivals_pct
