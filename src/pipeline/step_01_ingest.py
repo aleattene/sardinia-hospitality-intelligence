@@ -4,7 +4,7 @@ Schema normalization strategy (see docs/ADR.md — ADR-002):
 - Column names are lowercased, stripped, and hyphens/spaces replaced with underscores.
 - All years are mapped to the 2024 target schema via explicit column dictionaries.
 - Columns absent in a given year are added as NULL.
-- The string literal "NULL" from source data is replaced with NaN before loading.
+- The string literal "NULL" from source data is replaced with pd.NA before loading.
 """
 
 import logging
@@ -137,12 +137,28 @@ def _log_null_counts(df: pd.DataFrame, source: str) -> None:
             logger.warning("  [%s] column '%s' has %d null values", source, col, count)
 
 
+_ALLOWED_TABLES: frozenset[str] = frozenset(
+    {"stg_tourism_flows", "stg_accommodation_capacity"}
+)
+
+
 def _insert_dataframe(
     conn: duckdb.DuckDBPyConnection,
     table: str,
     df: pd.DataFrame,
 ) -> None:
-    """Insert a DataFrame into a DuckDB table via a temporary view."""
+    """Insert a DataFrame into a DuckDB staging table via a temporary view.
+
+    Args:
+        conn: Active DuckDB connection.
+        table: Destination table name. Must be one of _ALLOWED_TABLES.
+        df: DataFrame to insert. Column order must match the target table schema.
+
+    Raises:
+        ValueError: If table is not in the allowed set.
+    """
+    if table not in _ALLOWED_TABLES:
+        raise ValueError(f"Insert target '{table}' is not an allowed staging table.")
     conn.register("_ingest_tmp", df)
     try:
         conn.execute(f"INSERT INTO {table} SELECT * FROM _ingest_tmp")  # noqa: S608
