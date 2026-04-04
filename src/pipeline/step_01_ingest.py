@@ -127,6 +127,10 @@ def _load_csv(path: Path) -> pd.DataFrame:
 
 def _log_null_counts(df: pd.DataFrame, source: str) -> None:
     """Log a warning for each column that contains null values."""
+    # TODO: Replace with explicit pre-insert validation that raises a clear error
+    # (including filename and column name) when NOT NULL columns contain null values,
+    # rather than relying on a generic DuckDB ConstraintException.
+    # See: TODO.md — Technical Debt.
     null_counts = df.isnull().sum()
     for col, count in null_counts.items():
         if count > 0:
@@ -140,8 +144,10 @@ def _insert_dataframe(
 ) -> None:
     """Insert a DataFrame into a DuckDB table via a temporary view."""
     conn.register("_ingest_tmp", df)
-    conn.execute(f"INSERT INTO {table} SELECT * FROM _ingest_tmp")  # noqa: S608
-    conn.unregister("_ingest_tmp")
+    try:
+        conn.execute(f"INSERT INTO {table} SELECT * FROM _ingest_tmp")  # noqa: S608
+    finally:
+        conn.unregister("_ingest_tmp")
 
 
 # ---------------------------------------------------------------------------

@@ -29,8 +29,10 @@ def main() -> None:
 
     with Timer() as t:
         conn = get_connection(config.DB_PATH)
-        step_01_ingest.run(conn)
-        conn.close()
+        try:
+            step_01_ingest.run(conn)
+        finally:
+            conn.close()
 
     logger.info("Pipeline completed in %.2fs.", t.elapsed)
 
