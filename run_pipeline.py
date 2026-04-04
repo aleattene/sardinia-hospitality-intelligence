@@ -1,4 +1,4 @@
-"""Pipeline orchestrator: CSV → DuckDB staging → transform → (export).
+"""Pipeline orchestrator: CSV → DuckDB staging → transform → export.
 
 Usage:
     python -m run_pipeline
@@ -6,13 +6,13 @@ Usage:
 Steps:
     01 — Ingest:    normalize raw CSV files → DuckDB staging tables
     02 — Transform: SQL views and aggregate queries
-    03 — Export:    DuckDB → CSV for notebook and dashboard  (not yet implemented)
+    03 — Export:    DuckDB → CSV for notebook and dashboard
 """
 
 import logging
 
 from src import config
-from src.pipeline import step_01_ingest, step_02_transform
+from src.pipeline import step_01_ingest, step_02_transform, step_03_export
 from src.utils.db import get_connection
 from src.utils.logging import setup_logging
 from src.utils.runtime import Timer
@@ -32,6 +32,7 @@ def main() -> None:
         try:
             step_01_ingest.run(conn)
             step_02_transform.run(conn)
+            step_03_export.run(conn)
         finally:
             conn.close()
 
