@@ -23,6 +23,7 @@ trend AS (
     FROM v_trend_yoy
     WHERE year = (SELECT yr FROM latest_year)
       AND province IS NOT NULL
+      AND yoy_arrivals_pct IS NOT NULL  -- exclude first-year rows (no prior year for LAG)
 ),
 origin AS (
     SELECT

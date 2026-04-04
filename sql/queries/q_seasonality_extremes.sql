@@ -2,7 +2,7 @@
 -- Identifies provinces with the least and most extreme seasonality (most recent year).
 -- peak_month_share: fraction of annual nights in the single busiest month.
 -- top3_month_share: combined share of the 3 busiest months.
--- seasonality_index: Gini-like concentration — higher = more seasonal.
+-- seasonality_index: Herfindahl-style concentration (sum of squared monthly shares) — higher = more seasonal.
 -- Lower peak_month_share = more distributed demand = year-round opportunity.
 
 CREATE OR REPLACE TABLE q_seasonality_extremes AS
