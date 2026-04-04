@@ -33,6 +33,9 @@ origin AS (
       AND province IS NOT NULL
     GROUP BY province
 ),
+-- INNER JOIN: only provinces with complete data across all three components receive a score.
+-- Provinces missing supply data (occupancy_proxy NULL) or absent from trend/origin are excluded.
+-- This avoids NULL propagation in the final score and ensures all scores are comparable.
 combined AS (
     SELECT
         g.province,
@@ -40,8 +43,8 @@ combined AS (
         t.yoy_arrivals_pct,
         o.intl_share
     FROM gap g
-    LEFT JOIN trend t ON g.province = t.province
-    LEFT JOIN origin o ON g.province = o.province
+    INNER JOIN trend t ON g.province = t.province
+    INNER JOIN origin o ON g.province = o.province
 ),
 normalized AS (
     SELECT

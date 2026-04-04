@@ -18,26 +18,27 @@ province_totals AS (
       AND province IS NOT NULL
     GROUP BY province
 ),
-monthly_ranked AS (
-    SELECT
-        s.province,
-        s.month,
-        s.monthly_nights,
-        s.month_share,
-        RANK() OVER (PARTITION BY s.province ORDER BY s.monthly_nights DESC) AS month_rank
-    FROM v_seasonality_profile s
-    WHERE s.year = (SELECT yr FROM latest_year)
-      AND s.province IS NOT NULL
-),
+-- peak: single busiest month share per province (MAX avoids tie ambiguity from RANK)
 peak AS (
-    SELECT province, month_share AS peak_month_share
-    FROM monthly_ranked
-    WHERE month_rank = 1
+    SELECT province, MAX(month_share) AS peak_month_share
+    FROM v_seasonality_profile
+    WHERE year = (SELECT yr FROM latest_year)
+      AND province IS NOT NULL
+    GROUP BY province
 ),
+-- top3: sum of the 3 largest month_share values per province
 top3 AS (
     SELECT province, SUM(month_share) AS top3_month_share
-    FROM monthly_ranked
-    WHERE month_rank <= 3
+    FROM (
+        SELECT
+            province,
+            month_share,
+            ROW_NUMBER() OVER (PARTITION BY province ORDER BY month_share DESC) AS rn
+        FROM v_seasonality_profile
+        WHERE year = (SELECT yr FROM latest_year)
+          AND province IS NOT NULL
+    ) AS ranked
+    WHERE rn <= 3
     GROUP BY province
 ),
 -- Seasonality index: sum of squared monthly shares (Herfindahl-style)

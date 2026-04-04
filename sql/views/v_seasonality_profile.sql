@@ -20,7 +20,7 @@ WITH annual_totals AS (
         FROM stg_tourism_flows
         WHERE province IS NOT NULL
         GROUP BY year, province, month, accommodation_type
-    )
+    ) AS monthly_totals
     GROUP BY year, province, accommodation_type
 ),
 monthly AS (
