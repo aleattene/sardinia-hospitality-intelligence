@@ -88,7 +88,7 @@ The composite priority score (occupancy + YoY growth + international share) rank
 
 | Output | Description |
 |--------|-------------|
-| Supply-demand gap ranking | By province, with occupancy proxy (nights/beds) and absolute gap |
+| Supply-demand gap ranking | By province, with occupancy proxy (%) and absolute gap |
 | Expansion priority ranking | Provinces scored on 3 equal-weight components: occupancy pressure, YoY growth, international share |
 | Seasonality profile | Monthly demand distribution per province, Herfindahl-style concentration index |
 | Tourist origin segmentation | Italian vs international breakdown by province |
