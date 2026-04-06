@@ -1,7 +1,7 @@
 -- View: v_supply_demand_gap
 -- Joins demand and supply by province and year to compute a gap proxy.
--- occupancy_proxy: average nights per available bed per year.
--- Higher values indicate higher pressure on existing supply.
+-- occupancy_proxy: total_nights / (total_beds × 365) × 100 — estimated bed occupancy rate (%).
+-- Higher values indicate higher demand pressure on existing supply.
 
 CREATE OR REPLACE VIEW v_supply_demand_gap AS
 WITH demand AS (
@@ -31,9 +31,12 @@ SELECT
     s.total_facilities,
     s.total_beds,
     s.total_rooms,
-    -- Nights per bed per year: proxy for occupancy pressure
+    -- Bed occupancy rate (%): nights / (beds × 365) × 100
     ROUND(
-        CASE WHEN s.total_beds > 0 THEN d.total_nights::DOUBLE / s.total_beds ELSE NULL END,
+        CASE WHEN s.total_beds > 0
+            THEN d.total_nights::DOUBLE / (s.total_beds * 365) * 100
+            ELSE NULL
+        END,
         2
     ) AS occupancy_proxy
 FROM demand d
