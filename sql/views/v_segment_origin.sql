@@ -13,13 +13,15 @@ WITH classified AS (
         year,
         province,
         month,
-        origin,
+        TRIM(origin) AS origin,
         -- Normalize origin group across schema versions:
         --   2018-2022: origin_macro = 'Italiani' (domestic) or 'Stranieri' (international)
         --   2023-2024: origin_macro is NULL (column exists in stg_tourism_flows but not populated);
         --              domestic is derived from known Italian region names in origin
         -- LOWER(TRIM(...)) guards against trailing spaces from CSV parsing and case variants
         -- across source years (ingest normalizes column names but not cell values).
+        -- origin is also TRIM-ped in the SELECT so that grouping and downstream joins
+        -- use the clean value rather than the raw cell (which may have trailing spaces).
         CASE
             WHEN LOWER(TRIM(origin_macro)) = 'italiani'
               OR LOWER(TRIM(origin)) IN (
