@@ -11,15 +11,18 @@ SELECT
     origin,
     -- Normalize origin group across schema versions:
     --   2018-2022: origin_macro = 'Italiani' (domestic) or 'Stranieri' (international)
-    --   2023-2024: no origin_macro column; domestic = known Italian regions listed below
+    --   2023-2024: origin_macro is NULL (column exists in stg_tourism_flows but not populated);
+    --              domestic is derived from known Italian region names in origin
+    -- LOWER(TRIM(...)) guards against trailing spaces from CSV parsing and case variants
+    -- across source years (ingest normalizes column names but not cell values).
     CASE
-        WHEN origin_macro = 'Italiani'
-          OR origin IN (
-            'Piemonte', 'Valle d''Aosta', 'Lombardia', 'Veneto',
-            'Friuli-Venezia Giulia', 'Liguria', 'Emilia Romagna',
-            'Toscana', 'Umbria', 'Marche', 'Lazio', 'Abruzzo',
-            'Molise', 'Campania', 'Puglia', 'Basilicata', 'Calabria',
-            'Sicilia', 'Sardegna', 'Bolzano', 'Trento', 'Italia'
+        WHEN LOWER(TRIM(origin_macro)) = 'italiani'
+          OR LOWER(TRIM(origin)) IN (
+            'piemonte', 'valle d''aosta', 'lombardia', 'veneto',
+            'friuli-venezia giulia', 'liguria', 'emilia romagna',
+            'toscana', 'umbria', 'marche', 'lazio', 'abruzzo',
+            'molise', 'campania', 'puglia', 'basilicata', 'calabria',
+            'sicilia', 'sardegna', 'bolzano', 'trento', 'italia'
         )
         THEN 'Domestico'
         ELSE 'Internazionale'

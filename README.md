@@ -78,7 +78,7 @@ The composite priority score (occupancy + YoY growth + international share) rank
 
 | KPI | Formula | Interpretation |
 |-----|---------|----------------|
-| Occupancy Proxy | `nights / beds` | Intensity of bed usage — closer to real occupancy rate |
+| Occupancy Proxy | `nights / (beds × 365) × 100` | Bed occupancy rate (%) — nights used per bed over the year |
 | Supply-Demand Gap | `beds - arrivals` | Absolute under/over-supply estimate |
 | Priority Score | `(occupancy_norm + yoy_norm + intl_share_norm) / 3` | Equal-weight composite expansion priority (0–1) |
 
