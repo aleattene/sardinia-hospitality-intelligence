@@ -70,6 +70,14 @@ The composite priority score (occupancy + YoY growth + international share) rank
 
 ---
 
+## Geographic Overview
+
+Expansion priority score by province — combining occupancy pressure, YoY growth, and international tourist share.
+
+![Expansion Priority Score by Province](reports/figures/fig_15_choropleth_priority_score.png)
+
+---
+
 ## Analysis Scope
 
 - **Unit of analysis:** province (Sardinian provinces)
@@ -136,6 +144,7 @@ project_root/
 │   ├── db/                            # DuckDB file
 │   └── analysis/                      # CSV output for notebook
 ├── data_sample/                       # Schema-conformant sample data (committed)
+│   └── geo/                           # Reference geographic data — Sardinian province boundaries (GeoJSON)
 ├── notebooks/
 │   └── 01_eda_demand_supply.ipynb     # Exploratory analysis notebook
 ├── reports/
@@ -202,7 +211,7 @@ jupyter notebook notebooks/01_eda_demand_supply.ipynb
 
 ## Report
 
-> Coming soon — will be published upon completion of the EDA notebook.
+> Published. See links below.
 
 - [Executive Report](reports/REPORT.md)
 - [EDA Notebook](notebooks/01_eda_demand_supply.ipynb)
