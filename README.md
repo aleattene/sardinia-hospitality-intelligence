@@ -2,7 +2,7 @@
 
 ![Test & Coverage](https://github.com/aleattene/sardinia-hospitality-intelligence/actions/workflows/test.yml/badge.svg)
 ![Lint & Format](https://github.com/aleattene/sardinia-hospitality-intelligence/actions/workflows/lint.yml/badge.svg)
-[![Coverage](https://codecov.io/gh/aleattene/sardinia-hospitality-intelligence/branch/main/graph/badge.svg)](https://codecov.io/gh/aleattene/sardinia-hospitality-intelligence)
+[![codecov](https://codecov.io/gh/aleattene/sardinia-hospitality-intelligence/graph/badge.svg?token=1TXMAP8EU8)](https://codecov.io/gh/aleattene/sardinia-hospitality-intelligence)
 ![Python](https://img.shields.io/badge/Python-3.13-blue)
 ![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-blue)
 ![DuckDB](https://img.shields.io/badge/DuckDB-Analytical%20DB-yellow)
