@@ -195,12 +195,15 @@ class TestGetConnection:
         conn.close()
         assert db_path.parent.exists()
 
-    def test_memory_connection_does_not_create_disk_file(self, tmp_path):
+    def test_memory_connection_does_not_create_disk_file(self, tmp_path, monkeypatch):
         from src.utils.db import get_connection
 
+        monkeypatch.chdir(tmp_path)
+        before = set(tmp_path.glob("*.duckdb"))
         conn = get_connection(":memory:")
         conn.close()
-        assert list(tmp_path.iterdir()) == []
+        after = set(tmp_path.glob("*.duckdb"))
+        assert after == before
 
 
 class TestExecuteSqlFile:

@@ -7,12 +7,12 @@ reads them at import time (module-level execution).
 import os
 
 # Must be set before any `from src import config` is executed.
-os.environ.setdefault("FETCH_ISTAT_DATA", "false")
-os.environ.setdefault("DATA_DIR", "data")
-os.environ.setdefault("DB_DIR", "data/db")
-os.environ.setdefault("DB_FILENAME", "test.duckdb")
-os.environ.setdefault("RAW_DATA_DIR", "data_sample")
-os.environ.setdefault("ANALYSIS_OUTPUT_DIR", "data/analysis")
+os.environ["FETCH_ISTAT_DATA"] = "false"
+os.environ["DATA_DIR"] = "data"
+os.environ["DB_DIR"] = "data/db"
+os.environ["DB_FILENAME"] = "test.duckdb"
+os.environ["RAW_DATA_DIR"] = "data_sample"
+os.environ["ANALYSIS_OUTPUT_DIR"] = "data/analysis"
 
 import duckdb
 import pytest
