@@ -429,7 +429,7 @@ class TestCastNumericColumns:
         df = pd.DataFrame({"n": ["abc", "99"]})
         result = _cast_numeric_columns(df, ["n"])
         assert pd.isna(result["n"][0])
-        assert math.isclose(result["n"][0], 99.0)
+        assert math.isclose(result["n"][1], 99.0)
 
     def test_handles_multiple_columns(self):
         from src.pipeline.step_01_ingest import _cast_numeric_columns
