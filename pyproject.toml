@@ -11,5 +11,5 @@ source = ["src"]
 omit = ["tests/*"]
 
 [tool.coverage.report]
-fail_under = 0 # Set to 85 when tests are added
+fail_under = 85
 show_missing = true
