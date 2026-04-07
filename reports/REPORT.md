@@ -3,6 +3,11 @@
 > **Data-driven analysis of tourism demand and accommodation supply across Sardinian provinces**
 > Data: ISTAT open data, 2018–2024 · Analysis date: April 2025
 
+> **Regenerating figures:** All charts in this report are produced by
+> [`notebooks/01_eda_demand_supply.ipynb`](../notebooks/01_eda_demand_supply.ipynb).
+> Run `jupyter nbconvert --to notebook --execute notebooks/01_eda_demand_supply.ipynb --inplace`
+> to rebuild the PNG files in `reports/figures/`.
+
 ---
 
 ## Executive Summary

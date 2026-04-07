@@ -187,7 +187,7 @@ python -m run_pipeline
 # 3b. Run with fresh ISTAT data download
 FETCH_ISTAT_DATA=true python -m run_pipeline
 
-# 4. Run the test suite (175 tests, 93% coverage)
+# 4. Run the test suite
 pytest
 pytest --cov=src --cov-report=term-missing  # with coverage
 
