@@ -386,6 +386,98 @@ class TestVSegmentOrigin:
 
 
 # ===========================================================================
+# v_segment_origin_summary
+# ===========================================================================
+
+
+class TestVSegmentOriginSummary:
+    def test_columns(self, transformed_conn):
+        df = transformed_conn.execute(
+            "SELECT * FROM v_segment_origin_summary LIMIT 0"
+        ).df()
+        assert set(df.columns) == {
+            "year",
+            "province",
+            "origin_group",
+            "total_arrivals",
+            "total_nights",
+        }
+
+    def test_only_valid_origin_groups(self, transformed_conn):
+        groups = {
+            r[0]
+            for r in transformed_conn.execute(
+                "SELECT DISTINCT origin_group FROM v_segment_origin_summary"
+            ).fetchall()
+        }
+        assert groups == {"Domestico", "Internazionale"}
+
+    def test_row_count(self, transformed_conn):
+        """3 provinces × 2 origin_groups × 2 years = 12 rows."""
+        count = transformed_conn.execute(
+            "SELECT count(*) FROM v_segment_origin_summary"
+        ).fetchone()[0]
+        assert count == 12
+
+    def test_no_month_or_origin_column(self, transformed_conn):
+        """Summary must not expose month or raw origin — aggregated only."""
+        df = transformed_conn.execute(
+            "SELECT * FROM v_segment_origin_summary LIMIT 0"
+        ).df()
+        assert "month" not in df.columns
+        assert "origin" not in df.columns
+
+    def test_totals_consistent_with_v_segment_origin(self, transformed_conn):
+        """SUM over v_segment_origin_summary must equal SUM over v_segment_origin."""
+        summary_total = transformed_conn.execute(
+            "SELECT SUM(total_arrivals) FROM v_segment_origin_summary WHERE year=2024"
+        ).fetchone()[0]
+        detail_total = transformed_conn.execute(
+            "SELECT SUM(total_arrivals) FROM v_segment_origin WHERE year=2024"
+        ).fetchone()[0]
+        assert summary_total == detail_total
+
+    def test_cagliari_domestico_arrivals(self, transformed_conn):
+        """Cagliari 2024 Domestico (Italia only): 36 000 arrivals, 126 000 nights."""
+        row = transformed_conn.execute(
+            "SELECT total_arrivals, total_nights FROM v_segment_origin_summary "
+            "WHERE year=2024 AND province='Cagliari' AND origin_group='Domestico'"
+        ).fetchone()
+        assert row == (36000, 126000)
+
+    def test_cagliari_internazionale_arrivals(self, transformed_conn):
+        """Cagliari 2024 Internazionale (Germania only): 18 000 arrivals, 72 000 nights."""
+        row = transformed_conn.execute(
+            "SELECT total_arrivals, total_nights FROM v_segment_origin_summary "
+            "WHERE year=2024 AND province='Cagliari' AND origin_group='Internazionale'"
+        ).fetchone()
+        assert row == (18000, 72000)
+
+    def test_intl_share_one_third_cagliari(self, transformed_conn):
+        """Internazionale = 1/3 of Cagliari 2024 total arrivals."""
+        rows = transformed_conn.execute("""
+            SELECT origin_group, total_arrivals
+            FROM v_segment_origin_summary
+            WHERE year=2024 AND province='Cagliari'
+            """).fetchall()
+        totals = {r[0]: r[1] for r in rows}
+        total = sum(totals.values())
+        assert abs(totals["Internazionale"] / total - 1 / 3) < 0.001
+
+    def test_total_arrivals_positive(self, transformed_conn):
+        count = transformed_conn.execute(
+            "SELECT count(*) FROM v_segment_origin_summary WHERE total_arrivals <= 0"
+        ).fetchone()[0]
+        assert count == 0
+
+    def test_no_null_province(self, transformed_conn):
+        count = transformed_conn.execute(
+            "SELECT count(*) FROM v_segment_origin_summary WHERE province IS NULL"
+        ).fetchone()[0]
+        assert count == 0
+
+
+# ===========================================================================
 # v_segment_accommodation
 # ===========================================================================
 

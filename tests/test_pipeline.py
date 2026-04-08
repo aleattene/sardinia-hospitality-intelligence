@@ -857,7 +857,7 @@ class TestStep03Run:
             "v_demand_by_province.csv",
             "v_supply_by_province.csv",
             "v_supply_demand_gap.csv",
-            "v_segment_origin.csv",
+            "v_segment_origin_summary.csv",
             "v_segment_accommodation.csv",
             "v_trend_yoy.csv",
         }
