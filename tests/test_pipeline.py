@@ -810,14 +810,14 @@ class TestExportTable:
     def test_exports_view_to_csv(self, transformed_conn, tmp_path):
         from src.pipeline.step_03_export import _export_table
 
-        rows = _export_table(transformed_conn, "v_demand_by_province", tmp_path)
+        _, rows = _export_table(transformed_conn, "v_demand_by_province", tmp_path)
         assert (tmp_path / "v_demand_by_province.csv").exists()
         assert rows > 0
 
     def test_exports_query_table_to_csv(self, transformed_conn, tmp_path):
         from src.pipeline.step_03_export import _export_table
 
-        rows = _export_table(transformed_conn, "q_priority_score", tmp_path)
+        _, rows = _export_table(transformed_conn, "q_priority_score", tmp_path)
         assert (tmp_path / "q_priority_score.csv").exists()
         assert rows == 3  # 3 provinces
 
