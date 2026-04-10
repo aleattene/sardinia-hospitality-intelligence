@@ -89,20 +89,20 @@ def run(conn: duckdb.DuckDBPyConnection) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # --- Google Sheets: fail-fast validation before export loop ---
-    sheets_client: gspread.Client | None = None
-    spreadsheet_id: str | None = None
+    # sheets_push is either None (disabled) or a (client, spreadsheet_id) tuple.
+    # Using a tuple keeps spreadsheet_id non-optional inside the push branch,
+    # avoiding assert/runtime guards that could be stripped by Python -O.
+    sheets_push: tuple[gspread.Client, str] | None = None
 
     if config.PUSH_TO_SHEETS:
         if not config.GOOGLE_SHEETS_SPREADSHEET_ID:
             raise RuntimeError(
                 "GOOGLE_SHEETS_SPREADSHEET_ID is required when PUSH_TO_SHEETS=true."
             )
-        spreadsheet_id = config.GOOGLE_SHEETS_SPREADSHEET_ID
-
         from src.sheets import _authorize
 
         try:
-            sheets_client = _authorize()
+            sheets_push = (_authorize(), config.GOOGLE_SHEETS_SPREADSHEET_ID)
         except RuntimeError:
             logger.error("Google Sheets authentication failed.")
             raise
@@ -115,21 +115,19 @@ def run(conn: duckdb.DuckDBPyConnection) -> None:
     for table in _QUERY_TABLES:
         df, rows = _export_table(conn, table, output_dir)
         total_rows += rows
-        if sheets_client is not None:
-            assert spreadsheet_id is not None
+        if sheets_push is not None:
             from src.sheets import push_dataframe
 
-            push_dataframe(sheets_client, df, table, spreadsheet_id)
+            push_dataframe(sheets_push[0], df, table, sheets_push[1])
 
     logger.info("Exporting analytical views...")
     for view in _VIEWS:
         df, rows = _export_table(conn, view, output_dir)
         total_rows += rows
-        if sheets_client is not None:
-            assert spreadsheet_id is not None
+        if sheets_push is not None:
             from src.sheets import push_dataframe
 
-            push_dataframe(sheets_client, df, view, spreadsheet_id)
+            push_dataframe(sheets_push[0], df, view, sheets_push[1])
 
     logger.info(
         "Export complete: %d objects, %d total rows → %s",
