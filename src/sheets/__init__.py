@@ -147,5 +147,5 @@ def push_dataframe(
         logger.info("  %-40s %6d rows → Sheets", worksheet_name, len(df))
         return len(df)
     except gspread.exceptions.APIError:
-        logger.error("Google Sheets API error on worksheet '%s'.", worksheet_name)
+        logger.exception("Google Sheets API error on worksheet '%s'.", worksheet_name)
         raise
