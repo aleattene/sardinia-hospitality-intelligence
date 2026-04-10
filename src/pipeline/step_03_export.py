@@ -116,6 +116,7 @@ def run(conn: duckdb.DuckDBPyConnection) -> None:
         df, rows = _export_table(conn, table, output_dir)
         total_rows += rows
         if sheets_client is not None:
+            assert spreadsheet_id is not None
             from src.sheets import push_dataframe
 
             push_dataframe(sheets_client, df, table, spreadsheet_id)
@@ -125,6 +126,7 @@ def run(conn: duckdb.DuckDBPyConnection) -> None:
         df, rows = _export_table(conn, view, output_dir)
         total_rows += rows
         if sheets_client is not None:
+            assert spreadsheet_id is not None
             from src.sheets import push_dataframe
 
             push_dataframe(sheets_client, df, view, spreadsheet_id)

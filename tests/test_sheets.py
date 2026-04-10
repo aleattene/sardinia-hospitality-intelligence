@@ -278,9 +278,9 @@ class TestPushDataframe:
         values_passed = ws.update.call_args[0][0]
         # Flatten all data rows (skip header)
         flat = [cell for row in values_passed[1:] for cell in row]
-        assert float("nan") not in [
-            v for v in flat if isinstance(v, float)
-        ], "NaN must not be passed to Sheets"
+        assert not any(
+            pd.isna(v) for v in flat if isinstance(v, float)
+        ), "NaN must not be passed to Sheets"
 
 
 # ===========================================================================
