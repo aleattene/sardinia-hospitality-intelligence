@@ -30,13 +30,14 @@ _QUERY_TABLES: list[str] = [
 ]
 
 # Views to export for notebook exploration (sql/views/).
-# Excludes v_seasonality_profile (high cardinality — province × month × type × year)
-# and v_segment_origin (~2M rows) which are queried directly from DuckDB when needed.
-# v_segment_origin_summary replaces v_segment_origin for Looker Studio / Google Sheets.
+# Excludes v_seasonality_profile (high cardinality — province × month × type × year).
+# v_segment_origin is exported for the EDA notebook (reads data/analysis/v_segment_origin.csv).
+# v_segment_origin_summary is the aggregated view for Looker Studio / Google Sheets.
 _VIEWS: list[str] = [
     "v_demand_by_province",
     "v_supply_by_province",
     "v_supply_demand_gap",
+    "v_segment_origin",
     "v_segment_origin_summary",
     "v_segment_accommodation",
     "v_trend_yoy",

@@ -30,6 +30,18 @@ _VALID_SA: dict = {
 
 
 class TestGetCredentialsFromKeychain:
+    def test_keyring_backend_error_raises(self):
+        import keyring.errors
+        from src.sheets import _get_credentials_from_keychain
+
+        with patch(
+            "src.sheets.keyring.get_password",
+            side_effect=keyring.errors.KeyringError("backend unavailable"),
+        ):
+            with pytest.raises(RuntimeError) as exc_info:
+                _get_credentials_from_keychain()
+        assert "keychain" in str(exc_info.value).lower()
+
     def test_missing_entry_raises(self):
         from src.sheets import _get_credentials_from_keychain
 
@@ -227,12 +239,12 @@ def _make_client(worksheet_exists: bool = True) -> tuple[MagicMock, MagicMock]:
 
 class TestPushDataframe:
 
-    def test_resize_called_before_clear(self):
-        """worksheet.resize() must be called before clear() and update()."""
+    def test_resize_called_before_clear_on_existing_worksheet(self):
+        """On existing worksheet: resize → clear → update."""
         from src.sheets import push_dataframe
 
         df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
-        client, ws = _make_client()
+        client, ws = _make_client(worksheet_exists=True)
         call_order = []
         ws.resize.side_effect = lambda **kw: call_order.append("resize")
         ws.clear.side_effect = lambda: call_order.append("clear")
@@ -241,11 +253,20 @@ class TestPushDataframe:
         push_dataframe(client, df, "q_priority_score", "spreadsheet_id")
         assert call_order == ["resize", "clear", "update"]
 
+    def test_no_resize_on_new_worksheet(self):
+        """On new worksheet: add_worksheet already sets dimensions, no resize call."""
+        from src.sheets import push_dataframe
+
+        df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+        client, ws = _make_client(worksheet_exists=False)
+        push_dataframe(client, df, "q_priority_score", "spreadsheet_id")
+        ws.resize.assert_not_called()
+
     def test_resize_uses_correct_dimensions(self):
         from src.sheets import push_dataframe
 
         df = pd.DataFrame({"a": range(5), "b": range(5), "c": range(5)})
-        client, ws = _make_client()
+        client, ws = _make_client(worksheet_exists=True)
         push_dataframe(client, df, "q_priority_score", "spreadsheet_id")
         ws.resize.assert_called_once_with(rows=6, cols=3)  # len(df)+1, len(df.columns)
 

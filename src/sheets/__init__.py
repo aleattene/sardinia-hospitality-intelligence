@@ -38,7 +38,12 @@ def _get_credentials_from_keychain() -> dict:
             or missing required fields. Error messages are intentionally generic
             and never expose credential values.
     """
-    raw: str | None = keyring.get_password(config.KEYRING_SERVICE, config.KEYRING_KEY)
+    try:
+        raw: str | None = keyring.get_password(
+            config.KEYRING_SERVICE, config.KEYRING_KEY
+        )
+    except keyring.errors.KeyringError as exc:
+        raise RuntimeError("Unable to access macOS Keychain credentials.") from exc
     if not raw:
         raise RuntimeError("Credentials not found in macOS Keychain.")
 
@@ -133,15 +138,16 @@ def push_dataframe(
         spreadsheet = client.open_by_key(spreadsheet_id)
         try:
             worksheet = spreadsheet.worksheet(worksheet_name)
+            # Resize existing worksheet to fit current data — guards against the
+            # case where the DataFrame has grown beyond the existing sheet grid.
+            worksheet.resize(rows=len(df) + 1, cols=len(df.columns))
         except gspread.exceptions.WorksheetNotFound:
+            # New worksheet: created with correct dimensions, no resize needed.
             worksheet = spreadsheet.add_worksheet(
                 title=worksheet_name,
                 rows=len(df) + 1,
                 cols=len(df.columns),
             )
-        # Resize to fit current data before clearing — guards against the case
-        # where the DataFrame has grown beyond the existing sheet grid.
-        worksheet.resize(rows=len(df) + 1, cols=len(df.columns))
         worksheet.clear()
         worksheet.update(values, value_input_option="RAW")
         logger.info("  %-40s %6d rows → Sheets", worksheet_name, len(df))
