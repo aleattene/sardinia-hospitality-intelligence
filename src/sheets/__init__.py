@@ -47,6 +47,9 @@ def _get_credentials_from_keychain() -> dict:
     except json.JSONDecodeError as exc:
         raise RuntimeError("Credentials in Keychain are not valid JSON.") from exc
 
+    if not isinstance(info, dict):
+        raise RuntimeError("Keychain credentials are not a valid service account.")
+
     if info.get("type") != "service_account":
         raise RuntimeError("Keychain credentials are not a valid service account.")
 
@@ -69,10 +72,13 @@ def _authorize() -> gspread.Client:
         RuntimeError: On Keychain or credential validation failure.
     """
     info: dict = _get_credentials_from_keychain()
-    credentials: Credentials = Credentials.from_service_account_info(
-        info, scopes=_SCOPES
-    )
-    return gspread.authorize(credentials)
+    try:
+        credentials: Credentials = Credentials.from_service_account_info(
+            info, scopes=_SCOPES
+        )
+        return gspread.authorize(credentials)
+    except Exception as exc:
+        raise RuntimeError("Failed to authorize Google Sheets client.") from exc
 
 
 def _validate_worksheet_name(name: str) -> bool:
@@ -133,6 +139,9 @@ def push_dataframe(
                 rows=len(df) + 1,
                 cols=len(df.columns),
             )
+        # Resize to fit current data before clearing — guards against the case
+        # where the DataFrame has grown beyond the existing sheet grid.
+        worksheet.resize(rows=len(df) + 1, cols=len(df.columns))
         worksheet.clear()
         worksheet.update(values, value_input_option="RAW")
         logger.info("  %-40s %6d rows → Sheets", worksheet_name, len(df))

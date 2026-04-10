@@ -46,6 +46,15 @@ class TestGetCredentialsFromKeychain:
                 _get_credentials_from_keychain()
         assert "not valid json" in str(exc_info.value).lower()
 
+    def test_non_dict_json_raises(self):
+        from src.sheets import _get_credentials_from_keychain
+
+        for value in ["[]", '"a string"', "42", "true"]:
+            with patch("src.sheets.keyring.get_password", return_value=value):
+                with pytest.raises(RuntimeError) as exc_info:
+                    _get_credentials_from_keychain()
+            assert "not a valid service account" in str(exc_info.value).lower()
+
     def test_wrong_type_raises(self):
         from src.sheets import _get_credentials_from_keychain
 
@@ -120,6 +129,21 @@ class TestAuthorize:
         ):
             client = _authorize()
         assert client is mock_client
+
+    def test_authorize_wraps_exceptions_as_runtime_error(self):
+        from src.sheets import _authorize
+
+        with (
+            patch(
+                "src.sheets.keyring.get_password", return_value=json.dumps(_VALID_SA)
+            ),
+            patch(
+                "src.sheets.Credentials.from_service_account_info",
+                side_effect=ValueError("malformed key"),
+            ),
+        ):
+            with pytest.raises(RuntimeError, match="Failed to authorize"):
+                _authorize()
 
     def test_uses_sheets_scope_only(self):
         from src.sheets import _authorize, _SCOPES
@@ -202,6 +226,28 @@ def _make_client(worksheet_exists: bool = True) -> tuple[MagicMock, MagicMock]:
 
 
 class TestPushDataframe:
+
+    def test_resize_called_before_clear(self):
+        """worksheet.resize() must be called before clear() and update()."""
+        from src.sheets import push_dataframe
+
+        df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+        client, ws = _make_client()
+        call_order = []
+        ws.resize.side_effect = lambda **kw: call_order.append("resize")
+        ws.clear.side_effect = lambda: call_order.append("clear")
+        ws.update.side_effect = lambda *a, **kw: call_order.append("update")
+
+        push_dataframe(client, df, "q_priority_score", "spreadsheet_id")
+        assert call_order == ["resize", "clear", "update"]
+
+    def test_resize_uses_correct_dimensions(self):
+        from src.sheets import push_dataframe
+
+        df = pd.DataFrame({"a": range(5), "b": range(5), "c": range(5)})
+        client, ws = _make_client()
+        push_dataframe(client, df, "q_priority_score", "spreadsheet_id")
+        ws.resize.assert_called_once_with(rows=6, cols=3)  # len(df)+1, len(df.columns)
 
     def test_clear_called_before_update(self):
         from src.sheets import push_dataframe
