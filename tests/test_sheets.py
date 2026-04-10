@@ -218,7 +218,7 @@ def _make_client(worksheet_exists: bool = True) -> tuple[MagicMock, MagicMock]:
     if worksheet_exists:
         mock_spreadsheet.worksheet.return_value = mock_ws
     else:
-        mock_spreadsheet.worksheet.side_effect = gspread.exceptions.WorksheetNotFound
+        mock_spreadsheet.worksheet.side_effect = gspread.exceptions.WorksheetNotFound()
         mock_spreadsheet.add_worksheet.return_value = mock_ws
     mock_client = MagicMock()
     mock_client.open_by_key.return_value = mock_spreadsheet
