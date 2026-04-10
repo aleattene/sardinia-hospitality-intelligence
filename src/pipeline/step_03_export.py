@@ -85,10 +85,7 @@ def run(conn: duckdb.DuckDBPyConnection) -> None:
     """
     logger.info("=== Step 03: Export ===")
 
-    output_dir: Path = config.ANALYSIS_OUTPUT_DIR
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    # --- Google Sheets: fail-fast validation before export loop ---
+    # --- Google Sheets: fail-fast validation before any filesystem side effects ---
     # sheets_push is either None (disabled) or a (client, spreadsheet_id) tuple.
     # Using a tuple keeps spreadsheet_id non-optional inside the push branch,
     # avoiding assert/runtime guards that could be stripped by Python -O.
@@ -108,6 +105,11 @@ def run(conn: duckdb.DuckDBPyConnection) -> None:
             raise
 
         logger.info("Google Sheets authentication successful.")
+
+    # Directory creation happens after fail-fast checks to avoid filesystem
+    # side effects when the function raises due to invalid Sheets config.
+    output_dir: Path = config.ANALYSIS_OUTPUT_DIR
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     total_rows: int = 0
 
