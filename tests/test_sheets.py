@@ -376,6 +376,8 @@ class TestStep03PushFailFast:
 
         monkeypatch.setattr("src.config.PUSH_TO_SHEETS", True)
         monkeypatch.setattr("src.config.GOOGLE_SHEETS_SPREADSHEET_ID", "some_id")
+        monkeypatch.setattr("src.config.KEYRING_SERVICE", "test-service")
+        monkeypatch.setattr("src.config.KEYRING_KEY", "test-key")
         monkeypatch.setattr("src.config.ANALYSIS_OUTPUT_DIR", tmp_path)
 
         with patch(
