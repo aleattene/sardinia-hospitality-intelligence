@@ -103,6 +103,10 @@ def run(conn: duckdb.DuckDBPyConnection) -> None:
             raise RuntimeError(
                 "GOOGLE_SHEETS_SPREADSHEET_ID is required when PUSH_TO_SHEETS=true."
             )
+        if not config.KEYRING_SERVICE or not config.KEYRING_KEY:
+            raise RuntimeError(
+                "KEYRING_SERVICE and KEYRING_KEY are required when PUSH_TO_SHEETS=true."
+            )
         from src.sheets import _authorize
 
         try:
