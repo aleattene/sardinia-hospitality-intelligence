@@ -78,6 +78,28 @@ Expansion priority score by province — combining occupancy pressure, YoY growt
 
 ---
 
+## Dashboard
+
+An interactive dashboard built with **Looker Studio** provides a live, filterable view of all key metrics.
+
+**[Open Dashboard](https://lookerstudio.google.com/u/1/reporting/4c81006b-7483-4da2-8820-a7137f5519f3/)** — no Google account required.
+
+### Data flow
+
+```text
+DuckDB (analytical DB)
+  └── step_03_export.py
+        ├── CSV files (local, always)
+        └── Google Sheets (opt-in, on explicit request)
+              └── Looker Studio (live connector, auto-refresh)
+```
+
+The pipeline exports analytical tables to CSV by default. When `PUSH_TO_SHEETS=true` is explicitly set,
+the same data is also pushed to Google Sheets — which Looker Studio reads as a live data source.
+Authentication uses the macOS Keychain (zero credentials on disk or in environment variables).
+
+---
+
 ## Analysis Scope
 
 - **Unit of analysis:** province (Sardinian provinces)
@@ -102,7 +124,7 @@ Expansion priority score by province — combining occupancy pressure, YoY growt
 | Tourist origin segmentation | Italian vs international breakdown by province |
 | Year-over-year growth | Top growing segments by accommodation type and province |
 | Geographic visualization | Choropleth map of coverage across Sardinian provinces |
-| Interactive dashboard | Looker Studio Dashboard *(coming soon)* |
+| Interactive dashboard | [Looker Studio Dashboard](https://lookerstudio.google.com/u/1/reporting/4c81006b-7483-4da2-8820-a7137f5519f3/) — live, no login required |
 
 ---
 
@@ -131,10 +153,11 @@ project_root/
 ├── src/
 │   ├── config.py                      # Centralized configuration (env vars)
 │   ├── utils/                         # Shared utilities (logging, DB helpers, runtime)
+│   ├── sheets/                        # Google Sheets push (Keychain auth, gspread)
 │   └── pipeline/
 │       ├── step_01_ingest.py          # ISTAT CSV → raw tables in DuckDB
 │       ├── step_02_transform.py       # SQL views and aggregate tables
-│       └── step_03_export.py          # DuckDB → CSV for notebook and dashboard
+│       └── step_03_export.py          # DuckDB → CSV + optional push to Google Sheets
 ├── sql/
 │   ├── schema.sql                     # DDL: raw tables
 │   ├── views/                         # Analytical views (demand, supply, gap, seasonality…)
@@ -169,8 +192,9 @@ project_root/
 | Visualization | Matplotlib, Seaborn |
 | Notebook | Jupyter |
 | Geographic visualization | GeoPandas |
+| Google Sheets integration | gspread, keyring (macOS Keychain) |
 | Testing | pytest, pytest-cov |
-| Dashboard | Looker Studio |
+| Dashboard | Looker Studio (Google Sheets live connector) |
 
 ---
 
@@ -209,12 +233,11 @@ jupyter notebook notebooks/01_eda_demand_supply.ipynb
 
 ---
 
-## Report
-
-> Published. See links below.
+## Report & Dashboard
 
 - [Executive Report](reports/REPORT.md)
 - [EDA Notebook](notebooks/01_eda_demand_supply.ipynb)
+- [Interactive Dashboard](https://lookerstudio.google.com/u/1/reporting/4c81006b-7483-4da2-8820-a7137f5519f3/) — Looker Studio, no login required
 
 ---
 
