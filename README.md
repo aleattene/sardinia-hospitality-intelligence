@@ -96,6 +96,7 @@ DuckDB (analytical DB)
 
 The pipeline exports analytical tables to CSV by default. When `PUSH_TO_SHEETS=true` is explicitly set,
 the same data is also pushed to Google Sheets — which Looker Studio reads as a live data source.
+`GOOGLE_SHEETS_SPREADSHEET_ID` must also be set to the target spreadsheet ID.
 Authentication uses the macOS Keychain (zero credentials on disk or in environment variables).
 
 ---
