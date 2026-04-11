@@ -13,6 +13,9 @@ os.environ["DB_DIR"] = "data/db"
 os.environ["DB_FILENAME"] = "test.duckdb"
 os.environ["RAW_DATA_DIR"] = "data_sample"
 os.environ["ANALYSIS_OUTPUT_DIR"] = "data/analysis"
+# Sheets push is disabled by default via env var; specific tests may enable it
+# explicitly with monkeypatching and mocks — no real Google API calls are ever made.
+os.environ["PUSH_TO_SHEETS"] = "false"
 
 import duckdb
 import pytest

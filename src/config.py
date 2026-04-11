@@ -57,6 +57,20 @@ ANALYSIS_OUTPUT_DIR: Path = _resolve_path(
     _require_env("ANALYSIS_OUTPUT_DIR"), PROJECT_ROOT
 )
 
+# --- Google Sheets push (opt-in, default off) ---
+# PUSH_TO_SHEETS: if "true", pipeline pushes CSVs to Google Sheets after export.
+# Defaults to false so CI and contributors never touch Google APIs.
+PUSH_TO_SHEETS: bool = os.getenv("PUSH_TO_SHEETS", "false").lower() == "true"
+
+# GOOGLE_SHEETS_SPREADSHEET_ID: required at runtime only when PUSH_TO_SHEETS=true.
+# Not a secret — it is the public spreadsheet ID from the Sheets URL.
+GOOGLE_SHEETS_SPREADSHEET_ID: str | None = os.getenv("GOOGLE_SHEETS_SPREADSHEET_ID")
+
+# Keyring constants: identify the macOS Keychain entry holding the service account JSON.
+# These are identifiers, not secrets.
+KEYRING_SERVICE: str = "sardinia-hospitality-intelligence"
+KEYRING_KEY: str = "google-sheets-service-account"
+
 # --- SQL (derived from project structure, not env vars) ---
 SQL_DIR: Path = PROJECT_ROOT / "sql"
 SQL_SCHEMA: Path = SQL_DIR / "schema.sql"
