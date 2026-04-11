@@ -29,7 +29,7 @@ _QUERY_TABLES: list[str] = [
     "q_top_growth_segments",
 ]
 
-# Views to export for notebook exploration (sql/views/).
+# Views to export to CSV for notebook exploration (sql/views/).
 # Excludes v_seasonality_profile (high cardinality — province × month × type × year).
 # v_segment_origin is exported for the EDA notebook (reads data/analysis/v_segment_origin.csv).
 # v_segment_origin_summary is the aggregated view for Looker Studio / Google Sheets.
@@ -42,6 +42,12 @@ _VIEWS: list[str] = [
     "v_segment_accommodation",
     "v_trend_yoy",
 ]
+
+# Subset of _VIEWS + _QUERY_TABLES safe to push to Google Sheets.
+# Excludes v_segment_origin (high cardinality — use v_segment_origin_summary instead).
+_SHEETS_TARGETS: frozenset[str] = frozenset(
+    _QUERY_TABLES + [v for v in _VIEWS if v != "v_segment_origin"]
+)
 
 # Union of allowed export targets — used to validate identifiers before query execution.
 _ALLOWED_EXPORT_TARGETS: frozenset[str] = frozenset(_QUERY_TABLES + _VIEWS)
@@ -118,7 +124,7 @@ def run(conn: duckdb.DuckDBPyConnection) -> None:
     for table in _QUERY_TABLES:
         df, rows = _export_table(conn, table, output_dir)
         total_rows += rows
-        if sheets_push is not None:
+        if sheets_push is not None and table in _SHEETS_TARGETS:
             from src.sheets import push_dataframe
 
             push_dataframe(sheets_push[0], df, table, sheets_push[1])
@@ -127,7 +133,7 @@ def run(conn: duckdb.DuckDBPyConnection) -> None:
     for view in _VIEWS:
         df, rows = _export_table(conn, view, output_dir)
         total_rows += rows
-        if sheets_push is not None:
+        if sheets_push is not None and view in _SHEETS_TARGETS:
             from src.sheets import push_dataframe
 
             push_dataframe(sheets_push[0], df, view, sheets_push[1])

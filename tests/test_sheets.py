@@ -387,6 +387,14 @@ class TestStep03PushFailFast:
                 step_03_export.run(conn)
             conn.close()
 
+    def test_sheets_targets_excludes_high_cardinality_view(self):
+        """v_segment_origin must not be in _SHEETS_TARGETS — too high cardinality."""
+        from src.pipeline.step_03_export import _SHEETS_TARGETS, _VIEWS
+
+        assert "v_segment_origin" in _VIEWS  # exported to CSV for notebook
+        assert "v_segment_origin" not in _SHEETS_TARGETS  # never pushed to Sheets
+        assert "v_segment_origin_summary" in _SHEETS_TARGETS  # summary is fine
+
     def test_push_to_sheets_false_skips_auth(self, monkeypatch, tmp_path):
         """When PUSH_TO_SHEETS=false, no Keychain or gspread call is ever made."""
         import duckdb
