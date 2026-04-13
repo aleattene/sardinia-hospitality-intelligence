@@ -82,7 +82,7 @@ Expansion priority score by province — combining occupancy pressure, YoY growt
 
 An interactive dashboard built with **Looker Studio** provides a live, filterable view of all key metrics.
 
-**[Open Dashboard](https://lookerstudio.google.com/s/v2XX9XVY8Zk)** — Google account required.
+**[Open Dashboard](https://lookerstudio.google.com/s/v2XX9XVY8Zk)**
 
 ### Data flow
 
