@@ -82,7 +82,7 @@ Expansion priority score by province — combining occupancy pressure, YoY growt
 
 An interactive dashboard built with **Looker Studio** provides a live, filterable view of all key metrics.
 
-**[Open Dashboard](https://lookerstudio.google.com/s/vtDBeYxqpZg/)** — Google account required.
+**[Open Dashboard](https://lookerstudio.google.com/s/v2XX9XVY8Zk)** — Google account required.
 
 ### Data flow
 
@@ -125,7 +125,7 @@ Authentication uses the macOS Keychain (zero credentials on disk or in environme
 | Tourist origin segmentation | Italian vs international breakdown by province |
 | Year-over-year growth | Top growing segments by accommodation type and province |
 | Geographic visualization | Choropleth map of coverage across Sardinian provinces |
-| Interactive dashboard | [Looker Studio Dashboard](https://lookerstudio.google.com/s/vtDBeYxqpZg/) |
+| Interactive dashboard | [Looker Studio Dashboard](https://lookerstudio.google.com/s/v2XX9XVY8Zk) |
 
 ---
 
@@ -238,7 +238,7 @@ jupyter notebook notebooks/01_eda_demand_supply.ipynb
 
 - [Executive Report](reports/REPORT.md)
 - [EDA Notebook](notebooks/01_eda_demand_supply.ipynb)
-- [Interactive Dashboard](https://lookerstudio.google.com/s/vtDBeYxqpZg/) — Looker Studio
+- [Looker Studio Interactive Dashboard](https://lookerstudio.google.com/s/v2XX9XVY8Zk)
 
 ---
 
