@@ -370,6 +370,38 @@ class TestStep03PushFailFast:
         conn.close()
         assert list(tmp_path.glob("*.csv")) == []
 
+    def test_missing_keyring_service_raises_before_export(self, monkeypatch, tmp_path):
+        import duckdb
+        from src.pipeline import step_03_export
+
+        monkeypatch.setattr("src.config.PUSH_TO_SHEETS", True)
+        monkeypatch.setattr("src.config.GOOGLE_SHEETS_SPREADSHEET_ID", "some_id")
+        monkeypatch.setattr("src.config.KEYRING_SERVICE", None)
+        monkeypatch.setattr("src.config.KEYRING_KEY", "test-key")
+        monkeypatch.setattr("src.config.ANALYSIS_OUTPUT_DIR", tmp_path)
+
+        conn = duckdb.connect(":memory:")
+        with pytest.raises(RuntimeError, match="KEYRING_SERVICE and KEYRING_KEY"):
+            step_03_export.run(conn)
+        conn.close()
+        assert list(tmp_path.glob("*.csv")) == []
+
+    def test_missing_keyring_key_raises_before_export(self, monkeypatch, tmp_path):
+        import duckdb
+        from src.pipeline import step_03_export
+
+        monkeypatch.setattr("src.config.PUSH_TO_SHEETS", True)
+        monkeypatch.setattr("src.config.GOOGLE_SHEETS_SPREADSHEET_ID", "some_id")
+        monkeypatch.setattr("src.config.KEYRING_SERVICE", "test-service")
+        monkeypatch.setattr("src.config.KEYRING_KEY", None)
+        monkeypatch.setattr("src.config.ANALYSIS_OUTPUT_DIR", tmp_path)
+
+        conn = duckdb.connect(":memory:")
+        with pytest.raises(RuntimeError, match="KEYRING_SERVICE and KEYRING_KEY"):
+            step_03_export.run(conn)
+        conn.close()
+        assert list(tmp_path.glob("*.csv")) == []
+
     def test_auth_failure_raises_before_export(self, monkeypatch, tmp_path):
         import duckdb
         from src.pipeline import step_03_export
