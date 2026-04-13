@@ -66,10 +66,10 @@ PUSH_TO_SHEETS: bool = os.getenv("PUSH_TO_SHEETS", "false").lower() == "true"
 # Not a secret — it is the public spreadsheet ID from the Sheets URL.
 GOOGLE_SHEETS_SPREADSHEET_ID: str | None = os.getenv("GOOGLE_SHEETS_SPREADSHEET_ID")
 
-# Keyring constants: identify the macOS Keychain entry holding the service account JSON.
-# These are identifiers, not secrets.
-KEYRING_SERVICE: str = "sardinia-hospitality-intelligence"
-KEYRING_KEY: str = "google-sheets-service-account"
+# Keyring identifiers: locate the macOS Keychain entry holding the service account JSON.
+# These are identifiers, not secrets. Required at runtime only when PUSH_TO_SHEETS=true.
+KEYRING_SERVICE: str | None = os.getenv("KEYRING_SERVICE")
+KEYRING_KEY: str | None = os.getenv("KEYRING_KEY")
 
 # --- SQL (derived from project structure, not env vars) ---
 SQL_DIR: Path = PROJECT_ROOT / "sql"
