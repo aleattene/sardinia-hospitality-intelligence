@@ -7,7 +7,6 @@ reads them at import time (module-level execution).
 import os
 
 # Must be set before any `from src import config` is executed.
-os.environ["FETCH_ISTAT_DATA"] = "false"
 os.environ["DATA_DIR"] = "data"
 os.environ["DB_DIR"] = "data/db"
 os.environ["DB_FILENAME"] = "test.duckdb"

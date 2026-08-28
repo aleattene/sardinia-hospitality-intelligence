@@ -14,7 +14,6 @@ jobs:
     name: Run tests
     runs-on: ubuntu-latest
     env:
-      FETCH_ISTAT_DATA: "false"
       DATA_DIR: "data"
       DB_DIR: "data/db"
       DB_FILENAME: "hospitality.duckdb"

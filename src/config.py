@@ -44,9 +44,6 @@ def _resolve_path(raw: str, base: Path) -> Path:
     return path if path.is_absolute() else base / path
 
 
-# --- Pipeline control ---
-FETCH_ISTAT_DATA: bool = _require_env("FETCH_ISTAT_DATA").lower() == "true"
-
 # --- Data directories ---
 DATA_DIR: Path = _resolve_path(_require_env("DATA_DIR"), PROJECT_ROOT)
 DB_DIR: Path = _resolve_path(_require_env("DB_DIR"), PROJECT_ROOT)
