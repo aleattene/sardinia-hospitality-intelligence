@@ -212,25 +212,24 @@ pre-commit install
 
 # 2. Configure environment
 cp .env.example .env
-# No values required to run the default pipeline (processes local data only).
-# Set FETCH_ISTAT_DATA=true only when downloading fresh data from ISTAT.
+# The default values are enough: the pipeline processes local data only.
 
-# 3. Run the pipeline (processes existing local data — no remote calls)
+# 3. Data: download the source CSV files from the open data portal
+#    (see the Data Sources section) and place them in data/raw/
+
+# 4. Run the pipeline (no remote calls: it processes the CSV files in data/raw/)
 python -m run_pipeline
 
-# 3b. Run with fresh ISTAT data download
-FETCH_ISTAT_DATA=true python -m run_pipeline
-
-# 4. Run the test suite
+# 5. Run the test suite
 pytest
 pytest --cov=src --cov-report=term-missing  # with coverage
 
-# 5. Run the EDA notebook
+# 6. Run the EDA notebook
 jupyter notebook notebooks/01_eda_demand_supply.ipynb
 ```
 
-> By default the pipeline performs **no remote calls** — it processes existing raw data.
-> Set `FETCH_ISTAT_DATA=true` to trigger a fresh download from ISTAT.
+> The pipeline performs **no remote calls**: it processes the CSV files in `data/raw/`,
+> downloaded from the open data portal of the Sardinia Tourism Observatory.
 
 ---
 
