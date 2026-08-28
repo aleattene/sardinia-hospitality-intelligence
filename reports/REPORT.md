@@ -1,7 +1,7 @@
 # Sardinia Hospitality Intelligence — Executive Report
 
 > **Data-driven analysis of tourism demand and accommodation supply across Sardinian provinces**
-> Data: ISTAT open data, 2018–2024 · Analysis date: April 2025
+> Data: ISTAT open data, 2018–2024 · Analysis date: April 2026
 
 > **Regenerating figures:** All charts in this report are produced by
 > [`notebooks/01_eda_demand_supply.ipynb`](../notebooks/01_eda_demand_supply.ipynb).
