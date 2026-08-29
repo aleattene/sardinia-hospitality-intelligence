@@ -210,7 +210,7 @@ different market structures:
 
 ### Occupancy trend over time
 
-![Occupancy proxy by province (2018-2024)](figures/fig_05_occupancy_trend.png)
+![Occupancy proxy by province (2020-2024)](figures/fig_05_occupancy_trend.png)
 
 The comparable series starts in 2020 (see the Caveats in the Appendix: 2018-2019
 capacity is monthly-grained and 2021 lacks province detail). The pattern is common to

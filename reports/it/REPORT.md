@@ -207,7 +207,7 @@ lo stock di posti letto rivela strutture di mercato molto diverse:
 
 ### Trend dell'occupazione nel tempo
 
-![Occupancy proxy per provincia (2018-2024)](../figures/it/fig_05_occupancy_trend.png)
+![Occupancy proxy per provincia (2020-2024)](../figures/it/fig_05_occupancy_trend.png)
 
 La serie confrontabile parte dal 2020 (v. Avvertenze in Appendice: la capacità 2018-2019 ha granularità mensile e 
 il 2021 è privo del dettaglio provinciale). Il pattern è comune a tutte le province: forte risalita dal minimo 
